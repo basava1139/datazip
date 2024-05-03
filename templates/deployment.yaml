@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "datazip.fullname" . }}-clickhouse
+  labels:
+  {{- include "datazip.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.clickhouse.replicas }}
+  selector:
+    matchLabels:
+      app: clickhouse
+    {{- include "datazip.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        app: clickhouse
+      {{- include "datazip.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+      - env:
+        - name: KUBERNETES_CLUSTER_DOMAIN
+          value: {{ quote .Values.kubernetesClusterDomain }}
+        image: {{ .Values.clickhouse.clickhouse.image.repository }}:{{ .Values.clickhouse.clickhouse.image.tag
+          | default .Chart.AppVersion }}
+        name: clickhouse
+        ports:
+        - containerPort: 9000
+          name: clickhouse
+        resources: {}
+        volumeMounts:
+        - mountPath: /var/lib/clickhouse
+          name: clickhouse-data
+      volumes:
+      - name: clickhouse-data
+        persistentVolumeClaim:
+          claimName: {{ include "datazip.fullname" . }}-data
