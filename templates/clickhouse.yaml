@@ -10,4 +10,4 @@ spec:
     app: clickhouse
   {{- include "datazip.selectorLabels" . | nindent 4 }}
   ports:
-	{{- .Values.clickhouse.ports | toYaml | nindent 2 }}
+   {{- .Values.clickhouse.ports | toYaml | nindent 2 }}
