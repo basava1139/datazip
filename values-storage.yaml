@@ -1,0 +1,27 @@
+clickhouse:
+  server:
+    configuration: |
+      clickhouse_remote_servers:
+        - name: local
+          host: localhost
+          port: 9000
+
+      clickhouse_distributed_table_directories:
+        - '/var/lib/clickhouse/distributed'
+
+      clickhouse_compression:
+        clickhouse_compression_codec: lz4
+
+  zookeeper:
+    enabled: false
+
+  replicas: 1
+
+  storage:
+    type: local
+    hot:
+      size: 5Gi
+      move_factor: 0.2
+    cold:
+      size: 10Gi
+      move_factor: 0.2
